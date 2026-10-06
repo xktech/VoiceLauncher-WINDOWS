@@ -20,11 +20,6 @@ VOICE = "en-IE-ConnorNeural" # Voice. more in voices.md
 model = WhisperModel("base.en", device="cpu", compute_type="int8") # CPU
 # model = WhisperModel("medium", device="cuda", compute_type="float16") # GPU
 
-# Finds DLL's for nvidias pip package (to run the model with the GPU)
-for sp in site.getsitepackages():
-    for bin_dir in glob.glob(os.path.join(sp, "nvidia", "*", "bin")):
-        os.add_dll_directory(bin_dir)
-        os.environ["PATH"] = bin_dir + os.pathsep + os.environ["PATH"]
 
 # Generates text
 async def _generate(text2):
@@ -45,7 +40,7 @@ def speak(text2):
         pygame.time.Clock().tick(10)
 
 # You can change seconds to record how long
-def record(seconds=2):
+def record(seconds=3):
     print("Listening...")
     audio = sd.rec(int(seconds * SAMPLE_RATE), samplerate=SAMPLE_RATE,
                    channels=1, dtype="float32")

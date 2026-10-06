@@ -46,7 +46,7 @@ cd voice-launcher
 python -m venv venv
 venv\Scripts\activate
 
-pip install faster-whisper sounddevice numpy edge-tts pygame
+pip install -r requirements.txt
 ```
 
 The first run downloads the Whisper model (about 150 MB for `base.en`) from Hugging Face and caches it.
@@ -73,7 +73,6 @@ Commands live in the `COMMANDS` dictionary in `main.py`. The key is the phrase t
 COMMANDS = {
     "open notepad":     lambda: (speak("Opening Notepad"), os.startfile("notepad.exe")),
     "open calculator":  lambda: (speak("Opening calculator"), os.startfile("calc.exe")),
-    "launch minecraft": lambda: (speak("Launching Minecraft."), os.startfile(r"C:\Path\To\Launcher.exe")),
     "hello":            lambda: speak("Hello! How can I help?"),
 }
 ```
@@ -178,16 +177,7 @@ Then switch the model line to `device="cuda"`. If it still fails, update your NV
 | `Warning: unauthenticated requests to the HF Hub` | Harmless. Set a free `HF_TOKEN` for faster downloads, or ignore it. |
 | Symlink warning from `huggingface_hub` | Harmless on Windows. Set `HF_HUB_DISABLE_SYMLINKS_WARNING=1` to hide it. |
 | `pip` warning about `click` versions | Harmless. Neither package's command-line tools are used here. |
-| `git init` fails inside OneDrive | Move the project out of OneDrive (see the install tip). |
-
-## Project structure
-
-```
-voice-launcher/
-├── main.py          # recording, transcription, commands, speech
-├── .gitignore       # keeps venv/ and secrets out of git
-└── README.md
-```
+| `git init` fails inside OneDrive | Move the project out of OneDrive (see the install tip)
 
 ## Tech used
 
@@ -200,10 +190,9 @@ voice-launcher/
 
 - Push-to-talk with a global hotkey instead of pressing Enter
 - A wake word ("Jarvis, ...")
-- Fuzzy matching with `difflib.get_close_matches` for misheard commands
 - Say-to-switch voices
 - Caching common replies so they play instantly
 
 ## License
 
-Add a license of your choice (for example MIT) before publishing.
+MIT. See [LICENSE](LICENSE).
