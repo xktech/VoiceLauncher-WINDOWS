@@ -191,10 +191,11 @@ Then switch the model line to `device="cuda"`. If it still fails, update your NV
 ## Ideas for later
 
 - Push-to-talk with a global hotkey instead of pressing Enter
-- A wake word ("Jarvis, ...")
+- A wake word ("{name}, ...")
 - Say-to-switch voices
 - Caching common replies so they play instantly
 
+> You can customise the name
 ## License
 
 MIT. See [LICENSE](LICENSE).
