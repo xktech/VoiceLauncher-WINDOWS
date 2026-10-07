@@ -14,6 +14,9 @@ Launcher: (replies "Opening Notepad" out loud, then opens Notepad)
 - **Spoken replies** using Microsoft's neural voices through `edge-tts`, with a British "Jarvis"-style voice
 - **CPU or NVIDIA GPU** support
 - **Forgiving matching**: punctuation and capitalisation are stripped, and a command can appear anywhere in the sentence
+- **Open web links**
+- **Play YouTube videos**
+- **Google search query**
 
 ## How it works
 
@@ -51,7 +54,7 @@ pip install -r requirements.txt
 
 The first run downloads the Whisper model (about 150 MB for `base.en`) from Hugging Face and caches it.
 
-> **Tip:** keep the project outside OneDrive-synced folders (for example `C:\Projects\voice-launcher`). OneDrive can break `git init` and constantly tries to sync the `venv` folder.
+> Larger models require more storage and will take longer to download
 
 ## Usage
 
@@ -176,8 +179,7 @@ Then switch the model line to `device="cuda"`. If it still fails, update your NV
 | Phrases lose their spaces (`launchminecraft`) | Your `normalize()` regex is deleting spaces. It should be `[^a-z0-9 ]` (note the space). |
 | `Warning: unauthenticated requests to the HF Hub` | Harmless. Set a free `HF_TOKEN` for faster downloads, or ignore it. |
 | Symlink warning from `huggingface_hub` | Harmless on Windows. Set `HF_HUB_DISABLE_SYMLINKS_WARNING=1` to hide it. |
-| `pip` warning about `click` versions | Harmless. Neither package's command-line tools are used here. |
-| `git init` fails inside OneDrive | Move the project out of OneDrive (see the install tip)
+
 
 ## Tech used
 

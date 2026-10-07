@@ -1,20 +1,24 @@
+
+os.environ["PYGAME_HIDE_SUPPORT_PROMPT"] = "1" # Hides pygame support message, needs to be before the import
 import sounddevice as sd
 from faster_whisper import WhisperModel
 import os, io, asyncio, glob, site
 import edge_tts
 import re
-
-os.environ["PYGAME_HIDE_SUPPORT_PROMPT"] = "1" # Hides pygame support message
+import webbrowser
+from urllib.parse import quote_plus
 import pygame
 
 pygame.mixer.init()
 
 COMMANDS = {
-    "open notepad": lambda: (speak("Opening Notepad"), os.startfile("notepad.exe")),
+    "open notepad": lambda: (speak("Opening Notepad"), os.startfile("notepad.exe")), # Example
+    "open youtube": lambda: (speak("Opening Youtube"), webbrowser.open("https://www.youtube.com")),
+    "open youtube": lambda: (speak("Opening Youtube"), webbrowser.open("https://www.youtube.com")), # Example
 }
 
 SAMPLE_RATE = 16000 # 16 KHz 
-VOICE = "en-IE-ConnorNeural" # Voice. more in voices.md
+VOICE = "en-GB-RyanNeural" # Voice. more in voices.md
 
 # CPU is reccomended for smaller use (or no NVIDIA GPU)
 model = WhisperModel("base.en", device="cpu", compute_type="int8") # CPU
@@ -65,6 +69,17 @@ if __name__ == "__main__":
 
         userSaid = normalize(transcribe(record()))
         print("heard:", repr(userSaid)) # DEBUG LINE - You can remove it if you want to
+
+        if userSaid.startswith("youtube play "):
+            query = userSaid.removeprefix("youtube play ")
+            speak(f"Playing {query} on youtube")
+            webbrowser.open(f"https://www.youtube.com/results?search_query={quote_plus(query)}")
+        
+        if userSaid.startswith("search for "):
+            query = userSaid.removeprefix("search for ")
+            speak(f"Searching for {query}")
+            webbrowser.open(f"https://www.google.com/search?q={quote_plus(query)}")
+
 
         for phrase, action in COMMANDS.items():
             if phrase in userSaid:
