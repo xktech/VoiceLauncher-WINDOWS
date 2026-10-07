@@ -195,7 +195,7 @@ Then switch the model line to `device="cuda"`. If it still fails, update your NV
 - Say-to-switch voices
 - Caching common replies so they play instantly
 
-> You can customise the name
+> You can customise the name!
 ## License
 
 MIT. See [LICENSE](LICENSE).
