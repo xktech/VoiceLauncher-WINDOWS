@@ -2,3 +2,6 @@
 list_voices.py
 mine.py
 /.kilo
+/old
+personal.py
+/__pycache__
