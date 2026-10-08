@@ -144,7 +144,7 @@ COMMANDS["open projects"] = open_project
 
 ### Keeping personal settings out of the repo
 
-Create a file called `personal.py` next to `main.py`. If it exists, anything defined in it overrides the defaults, and its `APPS` and `LINKS` are added to the built-in ones. Add `personal.py` to `.gitignore` so it never gets pushed.
+Rename the file called `default_personal.py` to `personal.py`. If it exists, anything defined in it overrides the defaults, and its `APPS` and `LINKS` are added to the built-in ones.
 
 ```python
 # personal.py
