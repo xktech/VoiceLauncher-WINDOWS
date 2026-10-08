@@ -229,7 +229,7 @@ That's it. When `USE_GPU` is on, `main.py` points Windows at the pip-installed C
 ## Ideas for later
 
 - Push-to-talk with a global hotkey
-- A dedicated wake word detector (like openWakeWord) instead of using Whisper
+- A dedicated wake word detector (like openWakeWord) instead of using Whisper **COMPLETED**
 - Fuzzy matching so misheard commands still work
 - Say-to-switch voices
 - Caching common replies so they play instantly
