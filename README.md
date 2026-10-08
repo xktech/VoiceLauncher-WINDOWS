@@ -18,7 +18,11 @@ Launcher: (says "Opening Notepad" out loud, then opens Notepad)
 - **Spoken replies** using Microsoft's neural voices through `edge-tts`, with a British "Jarvis"-style voice
 - **CPU or NVIDIA GPU** support with a single setting
 - **Forgiving matching**: punctuation and capitalisation are stripped, and a command can appear anywhere in the sentence
-- **No hardcoded usernames.** App paths are built from Windows environment variables, so nothing personal ends up in the repo
+- **No hardcoded usernames.** App paths are built from Windows environment variables, so nothing personal ends up in the repo (+ it saves time)
+- **A dedicated wake word detector**: (like openWakeWord) instead of using Whisper
+- **CACHING COMMANDS**:Caching common replies so they play instantly
+> Heads up: Cached replies may take a bit to load the first time you run it
+
 
 ## How it works
 
@@ -229,7 +233,7 @@ That's it. When `USE_GPU` is on, `main.py` points Windows at the pip-installed C
 ## Ideas for later
 
 - Push-to-talk with a global hotkey
-- A dedicated wake word detector (like openWakeWord) instead of using Whisper **COMPLETED**
+- A dedicated wake word detector (like openWakeWord) instead of using Whisper
 - Fuzzy matching so misheard commands still work
 - Say-to-switch voices
 - Caching common replies so they play instantly

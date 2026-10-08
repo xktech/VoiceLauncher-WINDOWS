@@ -8,6 +8,8 @@ import re
 import site
 import webbrowser
 from urllib.parse import quote_plus
+import hashlib
+from pathlib import Path
 
 import numpy as np
 import sounddevice as sd
@@ -24,6 +26,8 @@ except ImportError:
 def setting(name, default):
     return getattr(personal, name, default)
 
+CACHE_DIR = Path(__file__).parent / "tts_cache"
+CACHE_DIR.mkdir(exist_ok=True)
 
 NAME = setting("NAME", "Jarvis")  # wake word
 VOICE = setting("VOICE", "en-GB-RyanNeural")  # other voices are in voices.md
@@ -32,6 +36,8 @@ USE_WAKE_WORD = setting("USE_WAKE_WORD", False)  # off = press enter to talk
 WHISPER_MODEL = setting("WHISPER_MODEL", "medium" if USE_GPU else "base.en")
 RECORD_SECONDS = setting("RECORD_SECONDS", 3)
 SAMPLE_RATE = 16000  # whisper wants 16k
+RATE = "-5%"
+PITCH = "-3Hz"
 
 LOCAL = os.environ["LOCALAPPDATA"]
 ROAMING = os.environ["APPDATA"]
@@ -65,20 +71,30 @@ else:
 
 pygame.mixer.init()
 
+def _cache_path(text):
+     key = hashlib.sha256(f"{VOICE}|{RATE}|{PITCH}|{text}".encode()).hexdigest()[:20]
+     return CACHE_DIR / f"{key}.mp3"
 
 async def _generate(text):
-    buf = io.BytesIO()
-    communicate = edge_tts.Communicate(text, VOICE, rate="-5%", pitch="-3Hz")
+    audio = bytearray()
+    communicate = edge_tts.Communicate(text, VOICE, rate=RATE, pitch=PITCH)
     async for chunk in communicate.stream():
         if chunk["type"] == "audio":
-            buf.write(chunk["data"])
-    buf.seek(0)
-    return buf
+            audio += chunk["data"]
+    return bytes(audio)
 
 
-def speak(text):
-    buf = asyncio.run(_generate(text))
-    pygame.mixer.music.load(buf, "mp3")
+def speak(text, cache=True):
+    path = _cache_path(text)
+    if cache and path.exists():
+        data = path.read_bytes()
+    else:
+        data = asyncio.run(_generate(text))
+        if cache:
+            path.write_byes(data)
+
+    
+    pygame.mixer.music.load(io.BytesIO(data), "mp3")
     pygame.mixer.music.play()
     # wait until it's done talking so the mic doesn't hear it
     while pygame.mixer.music.get_busy():
@@ -129,13 +145,13 @@ for _phrase, (_say, _url) in LINKS.items():
 def handle(user_said):
     if user_said.startswith("youtube search "):
         query = user_said.removeprefix("youtube play ")
-        speak(f"Searching {query} on YouTube")
+        speak(f"Searching {query} on YouTube", cache=False)
         webbrowser.open(f"https://www.youtube.com/results?search_query={quote_plus(query)}")
         return
 
     if user_said.startswith("search for "):
         query = user_said.removeprefix("search for ")
-        speak(f"Searching for {query}")
+        speak(f"Searching for {query}", cache=False)
         webbrowser.open(f"https://www.google.com/search?q={quote_plus(query)}")
         return
 
@@ -144,10 +160,23 @@ def handle(user_said):
             action()
             return
 
-    speak("Sorry, I didn't catch that.")
 
+def warm_cache(): # Pre loads
+    phrases = ["Sorry, I didn't catch that.", "Yes?"]
+    phrases += [say for say, _ in APPS.values()]
+    phrases += [say for say, _ in LINKS.values()]
+
+    missing = [p for p in phrases if not _cache_path(p).exists()]
+    if missing:
+        print(f"Caching {len(missing)} replies...")
+    for p in missing:
+        try:
+            _cache_path(p).write_bytes(asyncio.run(_generate(p)))
+        except Exception as e:  # offline or edge-tts hiccup, just skip it
+            print("couldn't cache:", p, e)
 
 def main():
+    warm_cache()
     if USE_WAKE_WORD:
         wake = NAME.lower()
         print(f"Say '{NAME}' to wake me. Ctrl+C to quit.")
