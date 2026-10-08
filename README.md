@@ -20,7 +20,7 @@ Launcher: (says "Opening Notepad" out loud, then opens Notepad)
 - **Forgiving matching**: punctuation and capitalisation are stripped, and a command can appear anywhere in the sentence
 - **No hardcoded usernames.** App paths are built from Windows environment variables, so nothing personal ends up in the repo (+ it saves time)
 - **A dedicated wake word detector**: (like openWakeWord) instead of using Whisper
-- **CACHING COMMANDS**:Caching common replies so they play instantly
+- **CACHING COMMANDS**: Caching common replies so they play instantly
 > Heads up: Cached replies may take a bit to load the first time you run it
 
 
